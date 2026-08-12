@@ -1,0 +1,28 @@
+{
+  "columns": [
+    { "field": "expand_icon", "group": "skip" },
+    { "field": "row_icon", "group": "skip" },
+    { "field": "course_code", "header": "كد درس", "group": "data", "order": 1 },
+    { "field": "course_name", "header": "نام درس", "group": "data", "order": 2 },
+    { "field": "instructor", "header": "استاد", "group": "data", "order": 3 },
+    { "field": "class_code", "header": "كد ارائه کلاس درس", "group": "data", "order": 4 },
+    { "field": "schedule", "header": "زمانبندي تشکيل کلاس", "group": "data", "order": 5 },
+    { "field": "course_type", "header": "نوع درس", "group": "data" },
+    { "field": "theory_units", "header": "تعداد واحد نظري", "group": "data" },
+    { "field": "practical_units", "header": "تعداد واحد عملي", "group": "data" },
+    { "field": "class_name", "header": "نام كلاس درس", "group": "data" },
+    { "field": "co_instructor", "header": "ساير اساتيد", "group": "data" },
+    { "field": "capacity", "header": "حداكثر ظرفيت", "group": "data" },
+    { "field": "enrolled", "header": "تعداد ثبت نامي تاکنون", "group": "data" },
+    { "field": "exam_time", "header": "زمان امتحان", "group": "data" },
+    { "field": "location", "header": "مكان برگزاري", "group": "data" },
+    { "field": "level", "header": "مقطع ارائه درس", "group": "metadata" },
+    { "field": "delivery_type", "header": "نوع ارائه", "group": "metadata" },
+    { "field": "offer_level", "header": "سطح ارائه", "group": "metadata" },
+    { "field": "eligible_students", "header": "دانشجويان مجاز به اخذ کلاس", "group": "skip" },
+    { "field": "faculty_group", "header": "گروه آموزشی", "group": "metadata" },
+    { "field": "college", "header": "دانشکده", "group": "metadata" },
+    { "field": "unit", "header": "واحد", "group": "metadata" },
+    { "field": "province", "header": "استان", "group": "metadata" }
+  ]
+}
