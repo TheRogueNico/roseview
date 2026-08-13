@@ -25,14 +25,14 @@ type Config struct {
 	Columns []Column `json:"columns"`
 }
 
-func LoadConfig(path string) (*Config, error) {
+func LoadConfig(path string) (Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("reading config: %w", err)
+		return Config{}, fmt.Errorf("reading config: %w", err)
 	}
 	var cfg Config
 	if err := json.Unmarshal(data, &cfg); err != nil {
-		return nil, fmt.Errorf("parsing config %s: %w", path, err)
+		return Config{}, fmt.Errorf("parsing config %s: %w", path, err)
 	}
-	return &cfg, nil
+	return cfg, nil
 }

@@ -28,7 +28,7 @@ func TestLoadConfig_Read(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, gotErr := LoadConfig(tt.path)
+			_, gotErr := LoadConfig(tt.path)
 			if gotErr != nil {
 				if !tt.wantErr {
 					t.Errorf("LoadConfig() failed: %v", gotErr)
@@ -37,9 +37,6 @@ func TestLoadConfig_Read(t *testing.T) {
 			}
 			if tt.wantErr {
 				t.Fatal("LoadConfig() succeeded unexpectedly")
-			}
-			if got == nil {
-				t.Errorf("LoadConfig() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -81,7 +78,7 @@ func TestLoadConfig_Parse(t *testing.T) {
 		t.Fatalf("LoadConfig() error = %v", err)
 	}
 
-	want := &Config{
+	want := Config{
 		Columns: []Column{
 			{
 				Field:  "name",
