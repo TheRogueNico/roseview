@@ -6,6 +6,11 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/TheRogueNico/roseview/internal/build"
+	"github.com/TheRogueNico/roseview/internal/config"
+	"github.com/TheRogueNico/roseview/internal/parse"
+	"github.com/TheRogueNico/roseview/internal/render"
 )
 
 func main() {
@@ -28,7 +33,7 @@ func run() error {
 		return fmt.Errorf("missing required -input flag")
 	}
 
-	conf, err := LoadConfig(*cfg)
+	conf, err := config.LoadConfig(*cfg)
 	if err != nil {
 		return err
 	}
@@ -39,17 +44,17 @@ func run() error {
 	}
 	defer f.Close()
 
-	tables, err := ParseTables(f)
+	tables, err := parse.ParseTables(f)
 	if err != nil {
 		return err
 	}
 
-	out, err := Build(conf, tables, *title)
+	out, err := build.Build(conf, tables, *title)
 	if err != nil {
 		return err
 	}
 
-	if err := Render(*outDir, out); err != nil {
+	if err := render.Render(*outDir, out); err != nil {
 		return err
 	}
 

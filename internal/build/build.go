@@ -1,8 +1,12 @@
-package main
+package build
 
 import (
 	"fmt"
 	"sort"
+
+	"github.com/TheRogueNico/roseview/internal/config"
+	"github.com/TheRogueNico/roseview/internal/normalize"
+	"github.com/TheRogueNico/roseview/internal/parse"
 )
 
 // KV is an ordered key/value pair, used for the metadata shown above the table.
@@ -15,7 +19,7 @@ type KV struct {
 // reflects the configured sort order, not the source layout.
 type Output struct {
 	Title    string
-	Columns  []Column
+	Columns  []config.Column
 	Rows     []map[string]string
 	Metadata []KV
 }
@@ -28,14 +32,14 @@ type Output struct {
 // columns are kept for display, metadata columns are folded into the
 // constant Metadata list, and skip columns are dropped. All cell text is
 // run through Normalize.
-func Build(cfg Config, tables []Table, title string) (Output, error) {
+func Build(cfg config.Config, tables []parse.Table, title string) (Output, error) {
 	out := Output{Title: title}
 	if len(tables) == 0 {
 		return out, fmt.Errorf("input contains no tables")
 	}
 
 	type mapping struct {
-		column Column
+		column config.Column
 		src    int
 	}
 
@@ -56,11 +60,11 @@ func Build(cfg Config, tables []Table, title string) (Output, error) {
 	var metaCols []mapping
 	for _, m := range mappings {
 		switch m.column.Group {
-		case GroupData:
+		case config.GroupData:
 			col := m.column
-			col.Header = Normalize(col.Header)
+			col.Header = normalize.Normalize(col.Header)
 			out.Columns = append(out.Columns, col)
-		case GroupMetadata:
+		case config.GroupMetadata:
 			metaCols = append(metaCols, m)
 		}
 	}
@@ -87,7 +91,7 @@ func Build(cfg Config, tables []Table, title string) (Output, error) {
 		for _, cells := range tbl.Rows {
 			row := make(map[string]string, len(mappings))
 			for _, m := range mappings {
-				if m.column.Group == GroupSkip {
+				if m.column.Group == config.GroupSkip {
 					continue
 				}
 				row[m.column.Field] = cellAt(cells, m.src)
@@ -100,7 +104,7 @@ func Build(cfg Config, tables []Table, title string) (Output, error) {
 	if len(out.Rows) > 0 {
 		for _, m := range metaCols {
 			out.Metadata = append(out.Metadata, KV{
-				Header: Normalize(m.column.Header),
+				Header: normalize.Normalize(m.column.Header),
 				Value:  out.Rows[0][m.column.Field],
 			})
 		}
@@ -111,9 +115,9 @@ func Build(cfg Config, tables []Table, title string) (Output, error) {
 
 // findHeader returns the index of want within headers, or -1 if absent.
 func findHeader(headers []string, want string) int {
-	want = Normalize(want)
+	want = normalize.Normalize(want)
 	for i, h := range headers {
-		if Normalize(h) == want {
+		if normalize.Normalize(h) == want {
 			return i
 		}
 	}
@@ -126,5 +130,5 @@ func cellAt(cells []string, i int) string {
 	if i < 0 || i >= len(cells) {
 		return ""
 	}
-	return Normalize(cells[i])
+	return normalize.Normalize(cells[i])
 }

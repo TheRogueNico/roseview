@@ -1,4 +1,4 @@
-package main
+package fuse
 
 import (
 	"fmt"
@@ -27,21 +27,14 @@ var distCandidates = []string{
 
 // fuseCacheFile returns the path where the fetched library is cached, so
 // later builds skip npm. ROSEVIEW_FUSE_CACHE overrides the location (used by
-// tests); by default the cache lives in assets/ next to the site assets.
+// tests); by default the cache lives in render's assets/ so the embed picks
+// it up on the next build.
 func fuseCacheFile() string {
 	if p := os.Getenv("ROSEVIEW_FUSE_CACHE"); p != "" {
 		return p
 	}
-	return filepath.Join("assets", "fuse.min.js")
+	return filepath.Join("internal", "render", "assets", "fuse.min.js")
 }
-
-// npmCommand is the npm executable invoked to fetch the library. Swapped in
-// tests.
-var npmCommand = "npm"
-
-// fetchFuse returns the library bytes, fetching the package with npm on
-// first use. Swapped in tests.
-var fetchFuse = npmFetchFuse
 
 // npmFetchFuse installs the pinned fuse.js package into a temp dir with npm
 // and returns the dist file bytes.
@@ -52,7 +45,7 @@ func npmFetchFuse() ([]byte, error) {
 	}
 	defer os.RemoveAll(dir)
 
-	cmd := exec.Command(npmCommand, "install",
+	cmd := exec.Command("npm", "install",
 		"--prefix", dir,
 		"--no-save",
 		"--no-audit",
@@ -61,8 +54,8 @@ func npmFetchFuse() ([]byte, error) {
 		"fuse.js@"+fuseVersion,
 	)
 	if out, err := cmd.CombinedOutput(); err != nil {
-		return nil, fmt.Errorf("running %s install fuse.js@%s: %w (%s)",
-			npmCommand, fuseVersion, err, strings.TrimSpace(string(out)))
+		return nil, fmt.Errorf("running npm install fuse.js@%s: %w (%s)",
+			fuseVersion, err, strings.TrimSpace(string(out)))
 	}
 	return pickDistFile(dir)
 }
@@ -80,15 +73,15 @@ func pickDistFile(pkgDir string) ([]byte, error) {
 		fuseVersion, strings.Join(distCandidates, ", "))
 }
 
-// ensureFuse returns the Fuse.js library bytes, fetching and caching them on
+// Ensure returns the Fuse.js library bytes, fetching and caching them on
 // first use. A failed fetch with no cached copy is an error.
-func ensureFuse() ([]byte, error) {
+func Ensure() ([]byte, error) {
 	cache := fuseCacheFile()
 	if b, err := os.ReadFile(cache); err == nil {
 		return b, nil
 	}
 
-	b, err := fetchFuse()
+	b, err := npmFetchFuse()
 	if err != nil {
 		return nil, fmt.Errorf("fetching fuse.js (no cached copy in %s): %w", cache, err)
 	}

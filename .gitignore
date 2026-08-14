@@ -36,5 +36,8 @@ go.work.sum
 out/
 site/
 
+# Sample input
+example.html
+
 # Downloaded library cache
-assets/fuse.min.js
+internal/render/assets/fuse.min.js

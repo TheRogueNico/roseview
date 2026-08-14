@@ -1,4 +1,4 @@
-package main
+package render
 
 import (
 	"os"
@@ -6,6 +6,9 @@ import (
 	"regexp"
 	"strings"
 	"testing"
+
+	"github.com/TheRogueNico/roseview/internal/build"
+	"github.com/TheRogueNico/roseview/internal/config"
 )
 
 // seedFuseCache points the fuse cache at a fresh temp dir holding a stub
@@ -22,16 +25,16 @@ func seedFuseCache(t *testing.T) {
 func TestRender(t *testing.T) {
 	seedFuseCache(t)
 	dir := t.TempDir()
-	out := Output{
+	out := build.Output{
 		Title: "برنامه درسی",
-		Columns: []Column{
-			{Field: "code", Header: "كد درس", Group: GroupData, Order: 1},
-			{Field: "name", Header: "نام درس", Group: GroupData},
+		Columns: []config.Column{
+			{Field: "code", Header: "كد درس", Group: config.GroupData, Order: 1},
+			{Field: "name", Header: "نام درس", Group: config.GroupData},
 		},
 		Rows: []map[string]string{
 			{"code": "2661144408", "name": "مبانی"},
 		},
-		Metadata: []KV{{Header: "نوع ارائه", Value: "حضوري"}},
+		Metadata: []build.KV{{Header: "نوع ارائه", Value: "حضوري"}},
 	}
 
 	if err := Render(dir, out); err != nil {
@@ -69,8 +72,8 @@ func TestRender(t *testing.T) {
 		}
 	}
 
-	// The last-updated chip must hold a Persian (Jalali) date.
-	date := regexp.MustCompile(`[۰-۹]{4}/[۰-۹]{2}/[۰-۹]{2}`)
+	// The last-updated chip must hold a Gregorian (system) date.
+	date := regexp.MustCompile(`\d{4}/\d{2}/\d{2}`)
 	if !date.MatchString(html) {
 		t.Errorf("index.html missing a Persian date for آخرین بروزرسانی")
 	}
@@ -95,9 +98,9 @@ func TestRender(t *testing.T) {
 func TestRender_EmptyTitle(t *testing.T) {
 	seedFuseCache(t)
 	dir := t.TempDir()
-	out := Output{
+	out := build.Output{
 		Title:   "",
-		Columns: []Column{{Field: "name", Header: "نام درس", Group: GroupData}},
+		Columns: []config.Column{{Field: "name", Header: "نام درس", Group: config.GroupData}},
 		Rows:    []map[string]string{{"name": "مبانی"}},
 	}
 

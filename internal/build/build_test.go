@@ -1,18 +1,21 @@
-package main
+package build
 
 import (
 	"reflect"
 	"testing"
+
+	"github.com/TheRogueNico/roseview/internal/config"
+	"github.com/TheRogueNico/roseview/internal/parse"
 )
 
 func TestBuild(t *testing.T) {
-	cfg := Config{Columns: []Column{
-		{Field: "expand", Header: "expand", Group: GroupSkip},
-		{Field: "code", Header: "كد درس", Group: GroupData, Order: 1},
-		{Field: "name", Header: "نام درس", Group: GroupData},
-		{Field: "delivery", Header: "نوع ارائه", Group: GroupMetadata},
+	cfg := config.Config{Columns: []config.Column{
+		{Field: "expand", Header: "expand", Group: config.GroupSkip},
+		{Field: "code", Header: "كد درس", Group: config.GroupData, Order: 1},
+		{Field: "name", Header: "نام درس", Group: config.GroupData},
+		{Field: "delivery", Header: "نوع ارائه", Group: config.GroupMetadata},
 	}}
-	tables := []Table{
+	tables := []parse.Table{
 		{
 			Headers: []string{"expand", "كد درس", "نام درس", "نوع ارائه"},
 			Rows: [][]string{
@@ -58,10 +61,10 @@ func TestBuild(t *testing.T) {
 }
 
 func TestBuild_MissingColumn(t *testing.T) {
-	cfg := Config{Columns: []Column{
-		{Field: "code", Header: "كد درس", Group: GroupData},
+	cfg := config.Config{Columns: []config.Column{
+		{Field: "code", Header: "كد درس", Group: config.GroupData},
 	}}
-	tables := []Table{{Headers: []string{"نام درس"}, Rows: [][]string{{"x"}}}}
+	tables := []parse.Table{{Headers: []string{"نام درس"}, Rows: [][]string{{"x"}}}}
 
 	if _, err := Build(cfg, tables, ""); err == nil {
 		t.Fatal("Build() succeeded, want error for missing column")
@@ -69,16 +72,16 @@ func TestBuild_MissingColumn(t *testing.T) {
 }
 
 func TestBuild_NoTables(t *testing.T) {
-	if _, err := Build(Config{}, nil, ""); err == nil {
+	if _, err := Build(config.Config{}, nil, ""); err == nil {
 		t.Fatal("Build() succeeded, want error for no tables")
 	}
 }
 
 func TestBuild_NormalizedHeaders(t *testing.T) {
-	cfg := Config{Columns: []Column{
-		{Field: "code", Header: "\u0643د درس", Group: GroupData}, // Arabic keheh
+	cfg := config.Config{Columns: []config.Column{
+		{Field: "code", Header: "\u0643د درس", Group: config.GroupData}, // Arabic keheh
 	}}
-	tables := []Table{
+	tables := []parse.Table{
 		{Headers: []string{"\u0643د درس"}, Rows: [][]string{{"1"}}},
 	}
 

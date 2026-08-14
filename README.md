@@ -59,3 +59,13 @@ itself is fully offline.
 go test ./...
 go build .
 ```
+
+The command lives at the repo root (`main.go`); the pipeline is split into
+supporting packages under `internal/`:
+
+- `internal/config` — column configuration loading
+- `internal/parse` — HTML table extraction
+- `internal/build` — binds parsed tables to the config
+- `internal/render` — emits the static site (embeds `assets/`)
+- `internal/fuse` — fetches/caches the Fuse.js library
+- `internal/normalize` — Persian text normalization

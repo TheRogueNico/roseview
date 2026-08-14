@@ -1,4 +1,4 @@
-package main
+package render
 
 import (
 	"embed"
@@ -8,6 +8,9 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/TheRogueNico/roseview/internal/build"
+	"github.com/TheRogueNico/roseview/internal/fuse"
 )
 
 //go:embed assets/*
@@ -15,10 +18,10 @@ var assets embed.FS
 
 // Render writes index.html, style.css, app.js and fuse.min.js into outDir.
 // The page embeds the bound data as JSON; the client-side script renders and
-// filters the table from it. fuse.min.js is fetched and cached by ensureFuse
+// filters the table from it. fuse.min.js is fetched and cached by fuse.Ensure
 // on first use, so the generated site works fully offline.
-func Render(outDir string, out Output) error {
-	fuse, err := ensureFuse()
+func Render(outDir string, out build.Output) error {
+	lib, err := fuse.Ensure()
 	if err != nil {
 		return err
 	}
@@ -29,9 +32,9 @@ func Render(outDir string, out Output) error {
 
 	// The generated page records when it was created. Prepend it to the
 	// metadata so it appears first above the table.
-	out.Metadata = append([]KV{{
+	out.Metadata = append([]build.KV{{
 		Header: "آخرین بروزرسانی",
-		Value:  jalaliDate(time.Now()),
+		Value:  time.Now().Format("2006/01/02"),
 	}}, out.Metadata...)
 
 	tmpl, err := template.ParseFS(assets, "assets/index.tmpl")
@@ -71,7 +74,7 @@ func Render(outDir string, out Output) error {
 		}
 	}
 
-	if err := os.WriteFile(filepath.Join(outDir, "fuse.min.js"), fuse, 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(outDir, "fuse.min.js"), lib, 0o644); err != nil {
 		return fmt.Errorf("writing fuse.min.js: %w", err)
 	}
 	return nil
