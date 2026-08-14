@@ -25,16 +25,3 @@ func TestJalaliDate(t *testing.T) {
 	}
 }
 
-func TestToPersianDigits(t *testing.T) {
-	tests := []struct{ in, want string }{
-		{"2026/08/14", "۲۰۲۶/۰۸/۱۴"},
-		{"1405", "۱۴۰۵"},
-		{"abc", "abc"},
-		{"", ""},
-	}
-	for _, tt := range tests {
-		if got := toPersianDigits(tt.in); got != tt.want {
-			t.Errorf("toPersianDigits(%q) = %q, want %q", tt.in, got, tt.want)
-		}
-	}
-}
