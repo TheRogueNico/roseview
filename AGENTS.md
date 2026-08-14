@@ -6,7 +6,7 @@ Go CLI with supporting packages. The `main.go` command lives at the repo root; a
 
 - `go test ./...` — all tests run offline; they stub the Fuse.js cache via `ROSEVIEW_FUSE_CACHE` (see `internal/render/render_test.go`). Never make tests depend on the network.
 - `go build .` — produces the `roseview` binary (gitignored).
-- Local smoke test: `go run . -input example.html` (writes to `out/`, gitignored).
+- Local smoke test: `go run . -input example.html` (writes to `site/`, gitignored).
 
 ## Pipeline
 

@@ -23,7 +23,7 @@ All flags are optional except `-input`:
 | Flag      | Default      | Description                                  |
 |-----------|--------------|----------------------------------------------|
 | `-input`  | *(required)* | Path to the HTML course-schedule export      |
-| `-out`    | `out`        | Directory to write the generated site into   |
+| `-out`    | `site`      | Directory to write the generated site into   |
 | `-config` | `config.json`| Path to the column config JSON               |
 | `-title`  | `برنامه درسی` | Page title shown in the site header          |
 

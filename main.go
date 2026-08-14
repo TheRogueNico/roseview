@@ -23,7 +23,7 @@ func main() {
 func run() error {
 	var (
 		input  = flag.String("input", "", "path to the HTML course-schedule export (required)")
-		outDir = flag.String("out", "out", "directory to write the generated site into")
+		outDir = flag.String("out", "site", "directory to write the generated site into")
 		cfg    = flag.String("config", "config.json", "path to the column config JSON")
 		title  = flag.String("title", "برنامه درسی", "page title shown in the site header")
 	)
