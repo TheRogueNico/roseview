@@ -96,14 +96,6 @@ h1 {
   border-color: var(--love);
 }
 
-.github-icon {
-  transition: transform 0.15s ease;
-}
-
-.github-btn:hover .github-icon {
-  transform: scale(1.15);
-}
-
 /* Metadata chips */
 
 .metadata {
