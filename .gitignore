@@ -39,6 +39,3 @@ site/
 # Sample input
 example.html
 table.html
-
-# Downloaded library cache
-internal/render/assets/fuse.min.js

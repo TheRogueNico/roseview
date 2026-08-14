@@ -36,11 +36,10 @@ The `-out` directory receives:
 - `rose.svg`   — favicon
 - `fuse.min.js` — the Fuse.js fuzzy-search library, bundled with the site
 
-Open `index.html` in a browser; no server or network is needed.
-
-The first build fetches Fuse.js via npm and caches it in
-`internal/render/assets/fuse.min.js`; later builds reuse the cache, and the
-generated page itself is fully offline.
+Open `index.html` in a browser; no server or network is needed. Fuse.js
+(v7.2.0, the last release shipping a browser UMD build) is vendored in
+`internal/render/assets/fuse.min.js` and bundled into the output, so the
+generated page is fully offline.
 
 ## Configuration
 
@@ -67,7 +66,6 @@ supporting packages under `internal/`:
 - `internal/parse` — HTML table extraction
 - `internal/build` — binds parsed tables to the config
 - `internal/render` — emits the static site (embeds `assets/`)
-- `internal/fuse` — fetches/caches the Fuse.js library
 - `internal/normalize` — Persian text normalization
 
 ## License

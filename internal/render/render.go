@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/TheRogueNico/roseview/internal/build"
-	"github.com/TheRogueNico/roseview/internal/fuse"
 )
 
 //go:embed assets/*
@@ -19,14 +18,9 @@ var assets embed.FS
 
 // Render writes index.html, style.css, app.js, rose.svg and fuse.min.js into
 // outDir. The page embeds the bound data as JSON; the client-side script
-// renders and filters the table from it. fuse.min.js is fetched and cached by
-// fuse.Ensure on first use, so the generated site works fully offline.
+// renders and filters the table from it. fuse.min.js is vendored in assets/,
+// so the generated site works fully offline.
 func Render(outDir string, out build.Output) error {
-	lib, err := fuse.Ensure()
-	if err != nil {
-		return err
-	}
-
 	if err := os.MkdirAll(outDir, 0o755); err != nil {
 		return fmt.Errorf("creating output dir: %w", err)
 	}
@@ -69,15 +63,12 @@ func Render(outDir string, out build.Output) error {
 		return fmt.Errorf("closing index.html: %w", err)
 	}
 
-	for _, name := range []string{"style.css", "app.js", "rose.svg"} {
+	for _, name := range []string{"style.css", "app.js", "rose.svg", "fuse.min.js"} {
 		if err := copyAsset(name, outDir); err != nil {
 			return err
 		}
 	}
 
-	if err := os.WriteFile(filepath.Join(outDir, "fuse.min.js"), lib, 0o644); err != nil {
-		return fmt.Errorf("writing fuse.min.js: %w", err)
-	}
 	return nil
 }
 

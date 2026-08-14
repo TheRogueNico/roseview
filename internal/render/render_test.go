@@ -11,19 +11,7 @@ import (
 	"github.com/TheRogueNico/roseview/internal/config"
 )
 
-// seedFuseCache points the fuse cache at a fresh temp dir holding a stub
-// library, so Render never touches the network or the repo's assets/.
-func seedFuseCache(t *testing.T) {
-	t.Helper()
-	stub := filepath.Join(t.TempDir(), "fuse.min.js")
-	if err := os.WriteFile(stub, []byte("stub"), 0o644); err != nil {
-		t.Fatal(err)
-	}
-	t.Setenv("ROSEVIEW_FUSE_CACHE", stub)
-}
-
 func TestRender(t *testing.T) {
-	seedFuseCache(t)
 	dir := t.TempDir()
 	out := build.Output{
 		Title: "برنامه درسی",
@@ -101,7 +89,6 @@ func TestRender(t *testing.T) {
 }
 
 func TestRender_EmptyTitle(t *testing.T) {
-	seedFuseCache(t)
 	dir := t.TempDir()
 	out := build.Output{
 		Title:   "",
