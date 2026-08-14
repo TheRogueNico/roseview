@@ -249,12 +249,13 @@ tbody tr.empty-row td {
   padding: 2rem 0.9rem;
 }
 
-/* Highlighted matches: a plain color change. No padding or border-radius,
-   which would insert a box and break the cursive joining of Persian text. */
+/* Matched cells: the whole text turns bold gold with no background, so the
+   zebra row coloring stays intact. */
 
 mark {
-  background: var(--gold);
-  color: var(--base);
+  background: none;
+  color: var(--gold);
+  font-weight: 600;
 }
 
 /* Empty cells are shown as a faint dash instead of blank space. */

@@ -17,14 +17,14 @@ const MIN_QUERY_LENGTH = 2;
 // Per-column sort state: 0 = unsorted, 1 = ascending, 2 = descending.
 const sortState = columns.map(() => 0);
 
-// Fuse.js index over the rows, searched one word at a time (Fuse v6 has no
+// Fuse.js index over the rows, searched one word at a time (no
 // built-in tokenized search). includeMatches yields the per-key character
-// ranges used for highlighting. threshold 0.2 keeps the matching strict
-// (about one wrong character per short word at most), and
-// minMatchCharLength drops matches built on a single stray character.
+// ranges used to decide which cells matched; threshold 0.3 keeps matching
+// forgiving, and minMatchCharLength drops matches built on a single stray
+// character.
 const fuse = new Fuse(rows, {
   keys: columns.map((c) => c.field),
-  threshold: 0.2,
+  threshold: 0.3,
   ignoreLocation: true,
   minMatchCharLength: 2,
   includeMatches: true,
@@ -35,20 +35,18 @@ const fieldToCol = new Map(columns.map((c, i) => [c.field, i]));
 // searchRows splits the query into words and intersects the per-word hits,
 // so a multi-word query can match across columns (e.g. "مبانی ریاضی" with
 // the first word in the course name and the second in the faculty group).
-// Returns a Map of refIndex -> per-column matched char indices.
+// Returns a Map of refIndex -> per-column matched flags.
 function searchRows(query) {
   const words = query.split(/\s+/).filter((w) => w.length > 0);
   let acc = null;
   for (const word of words) {
     const hits = new Map();
     for (const result of fuse.search(word)) {
-      const perCol = columns.map(() => new Set());
+      const perCol = columns.map(() => false);
       for (const m of result.matches) {
         const c = fieldToCol.get(m.key);
         if (c === undefined) continue;
-        for (const pair of m.indices) {
-          for (let idx = pair[0]; idx <= pair[1]; idx++) perCol[c].add(idx);
-        }
+        if (m.indices.length > 0) perCol[c] = true;
       }
       hits.set(result.refIndex, perCol);
     }
@@ -61,7 +59,7 @@ function searchRows(query) {
           acc.delete(ref);
         } else {
           for (let c = 0; c < columns.length; c++) {
-            for (const i of next[c]) perCol[c].add(i);
+            perCol[c] = perCol[c] || next[c];
           }
         }
       }
@@ -94,28 +92,12 @@ function toNumber(s) {
   return Number.isNaN(n) ? NaN : n;
 }
 
-// renderCell emits a cell, wrapping matched runs in <mark>.
+// renderCell emits a cell, wrapping the whole text in <mark> when the cell
+// matched the query.
 function renderCell(text, matched) {
   if (text === "") return emptyIcon();
-  if (!matched || matched.length === 0) return escapeHtml(text);
-
-  const ranges = [];
-  let prev = -2;
-  for (const idx of matched) {
-    if (idx === prev + 1) ranges[ranges.length - 1].end = idx;
-    else ranges.push({ start: idx, end: idx });
-    prev = idx;
-  }
-
-  let html = "";
-  let pos = 0;
-  for (const r of ranges) {
-    html += escapeHtml(text.slice(pos, r.start));
-    html += "<mark>" + escapeHtml(text.slice(r.start, r.end + 1)) + "</mark>";
-    pos = r.end + 1;
-  }
-  html += escapeHtml(text.slice(pos));
-  return html;
+  if (!matched) return escapeHtml(text);
+  return "<mark>" + escapeHtml(text) + "</mark>";
 }
 
 function emptyIcon() {
@@ -184,10 +166,7 @@ function renderRows() {
     matchSet = new Set(results.keys());
     matchMap = new Map();
     for (const [ref, perCol] of results) {
-      matchMap.set(
-        ref,
-        perCol.map((s) => [...s].sort((a, b) => a - b)),
-      );
+      matchMap.set(ref, perCol);
     }
   }
 
