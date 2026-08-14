@@ -1,0 +1,282 @@
+:root,
+:root[data-theme="rose-pine"] {
+  color-scheme: dark;
+  --base: #191724;
+  --surface: #1f1d2e;
+  --overlay: #26233a;
+  --muted: #6e6a86;
+  --subtle: #908caa;
+  --text: #e0def4;
+  --love: #eb6f92;
+  --gold: #f6c177;
+  --rose: #ebbcba;
+  --pine: #31748f;
+  --foam: #9ccfd8;
+  --iris: #c4a7e7;
+  --hl-low: #21202e;
+  --hl-med: #403d52;
+  --hl-high: #524f67;
+}
+
+:root[data-theme="rose-pine-dawn"] {
+  color-scheme: light;
+  --base: #faf4ed;
+  --surface: #fffaf3;
+  --overlay: #f2e9e1;
+  --muted: #9893a5;
+  --subtle: #797593;
+  --text: #575279;
+  --love: #b4637a;
+  --gold: #ea9d34;
+  --rose: #d7827e;
+  --pine: #286983;
+  --foam: #56949f;
+  --iris: #907aa9;
+  --hl-low: #f4ede8;
+  --hl-med: #dfdad9;
+  --hl-high: #cecacd;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--base);
+  color: var(--text);
+  font-family: Vazirmatn, "Vazir", "Segoe UI", Tahoma, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Header */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 0.5rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+.theme-toggle {
+  appearance: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--hl-med);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  line-height: 1;
+}
+
+.theme-toggle svg {
+  display: block;
+}
+
+.theme-toggle:hover {
+  border-color: var(--hl-high);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--iris);
+  outline-offset: 2px;
+}
+
+/* Metadata chips */
+
+.metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--surface);
+  border: 1px solid var(--pine);
+  border-radius: 8px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.chip-key {
+  color: var(--muted);
+}
+
+.chip-val {
+  color: var(--text);
+}
+
+/* Toolbar */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1 1 320px;
+}
+
+.search-icon {
+  position: absolute;
+  inset-inline-start: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.search {
+  width: 100%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--hl-med);
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  padding-inline-start: 2.3rem;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.search::placeholder {
+  color: var(--muted);
+}
+
+.search:focus {
+  outline: none;
+  border-color: var(--iris);
+  box-shadow: 0 0 0 3px var(--hl-med);
+}
+
+.count {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Table */
+
+.table-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--hl-med);
+  border-radius: 12px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--overlay);
+  color: var(--love);
+  text-align: right;
+  border: 1px solid var(--hl-med);
+  padding: 0.6rem 0.9rem;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+thead th:hover {
+  background: var(--hl-low);
+}
+
+thead th .sort-arrow {
+  color: var(--foam);
+  margin-inline-start: 0.3rem;
+}
+
+tbody td {
+  border: 1px solid var(--hl-med);
+  padding: 0.5rem 0.9rem;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+tbody tr:nth-child(odd) {
+  background: var(--base);
+}
+
+tbody tr:nth-child(even) {
+  background: var(--surface);
+}
+
+tbody tr:hover {
+  background: var(--hl-low);
+}
+
+tbody tr.empty-row td {
+  text-align: center;
+  color: var(--muted);
+  padding: 2rem 0.9rem;
+}
+
+/* Highlighted matches: a plain color change. No padding or border-radius,
+   which would insert a box and break the cursive joining of Persian text. */
+
+mark {
+  background: var(--gold);
+  color: var(--base);
+}
+
+/* Empty cells are shown as a faint dash instead of blank space. */
+
+td .empty-icon {
+  display: inline-flex;
+  vertical-align: middle;
+  color: var(--text);
+  opacity: 0.2;
+}
+
+/* Footer */
+
+.footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", serif;
+  padding: 1rem 1rem 2rem;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+}

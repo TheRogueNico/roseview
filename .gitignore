@@ -7,6 +7,7 @@
 *.dll
 *.so
 *.dylib
+roseview
 
 # Test binary, built with `go test -c`
 *.test
@@ -31,5 +32,9 @@ go.work.sum
 # .idea/
 # .vscode/
 
-# Example files
-example.html
+# Generated site output
+out/
+site/
+
+# Downloaded library cache
+assets/fuse.min.js

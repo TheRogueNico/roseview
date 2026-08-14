@@ -1,0 +1,90 @@
+package main
+
+import (
+	"embed"
+	"encoding/json"
+	"fmt"
+	"html/template"
+	"os"
+	"path/filepath"
+	"time"
+)
+
+//go:embed assets/*
+var assets embed.FS
+
+// Render writes index.html, style.css, app.js and fuse.min.js into outDir.
+// The page embeds the bound data as JSON; the client-side script renders and
+// filters the table from it. fuse.min.js is fetched and cached by ensureFuse
+// on first use, so the generated site works fully offline.
+func Render(outDir string, out Output) error {
+	fuse, err := ensureFuse()
+	if err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(outDir, 0o755); err != nil {
+		return fmt.Errorf("creating output dir: %w", err)
+	}
+
+	// The generated page records when it was created. Prepend it to the
+	// metadata so it appears first above the table.
+	out.Metadata = append([]KV{{
+		Header: "آخرین بروزرسانی",
+		Value:  jalaliDate(time.Now()),
+	}}, out.Metadata...)
+
+	tmpl, err := template.ParseFS(assets, "assets/index.tmpl")
+	if err != nil {
+		return fmt.Errorf("parsing index template: %w", err)
+	}
+
+	// encoding/json escapes <, >, & and U+2028/U+2029, so the payload is safe
+	// to inline verbatim as JavaScript.
+	data, err := json.Marshal(out)
+	if err != nil {
+		return fmt.Errorf("encoding page data: %w", err)
+	}
+
+	page := map[string]any{
+		"Title":    out.Title,
+		"Metadata": out.Metadata,
+		"Data":     template.JS(data),
+	}
+
+	f, err := os.Create(filepath.Join(outDir, "index.html"))
+	if err != nil {
+		return fmt.Errorf("creating index.html: %w", err)
+	}
+
+	if err := tmpl.Execute(f, page); err != nil {
+		f.Close()
+		return fmt.Errorf("rendering index.html: %w", err)
+	}
+	if err := f.Close(); err != nil {
+		return fmt.Errorf("closing index.html: %w", err)
+	}
+
+	for _, name := range []string{"style.css", "app.js"} {
+		if err := copyAsset(name, outDir); err != nil {
+			return err
+		}
+	}
+
+	if err := os.WriteFile(filepath.Join(outDir, "fuse.min.js"), fuse, 0o644); err != nil {
+		return fmt.Errorf("writing fuse.min.js: %w", err)
+	}
+	return nil
+}
+
+// copyAsset writes a single embedded asset into outDir.
+func copyAsset(name, outDir string) error {
+	b, err := assets.ReadFile("assets/" + name)
+	if err != nil {
+		return fmt.Errorf("reading %s: %w", name, err)
+	}
+	if err := os.WriteFile(filepath.Join(outDir, name), b, 0o644); err != nil {
+		return fmt.Errorf("writing %s: %w", name, err)
+	}
+	return nil
+}

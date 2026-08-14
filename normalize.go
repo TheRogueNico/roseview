@@ -12,6 +12,17 @@ var charVariants = strings.NewReplacer(
 	"ۀ", "هٔ",
 	"ة", "ه",
 
+	// Arabic diacritical marks (harakat)
+	"\u064b", "", // fathatan ً
+	"\u064c", "", // dammatan ٌ
+	"\u064d", "", // kasratan ٍ
+	"\u064e", "", // fatha َ
+	"\u064f", "", // damma ُ
+	"\u0650", "", // kasra ِ
+	"\u0651", "", // shadda ّ
+	"\u0652", "", // sukun ْ
+	"\u0670", "", // superscript alef ٰ
+
 	// Spacing characters
 	"\u200b", "", // zero-width space
 	"\u200d", "", // zero-width joiner
