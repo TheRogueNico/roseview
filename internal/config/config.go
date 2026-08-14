@@ -1,3 +1,4 @@
+// Package config loads the column configuration from JSON.
 package config
 
 import (

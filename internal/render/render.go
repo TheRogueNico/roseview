@@ -1,3 +1,4 @@
+// Package render emits the static site from the bound model.
 package render
 
 import (

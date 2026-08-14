@@ -1,3 +1,4 @@
+// Package fuse fetches and caches the Fuse.js fuzzy-search library.
 package fuse
 
 import (

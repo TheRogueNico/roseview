@@ -1,3 +1,4 @@
+// Package normalize unifies Persian/Arabic character variants and whitespace.
 package normalize
 
 import "strings"

@@ -1,3 +1,4 @@
+// Package build binds parsed tables to the column configuration.
 package build
 
 import (

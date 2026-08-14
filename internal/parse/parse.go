@@ -1,3 +1,4 @@
+// Package parse extracts tables from an HTML course-schedule export.
 package parse
 
 import (
