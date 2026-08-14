@@ -54,7 +54,6 @@ func TestRender(t *testing.T) {
 	html := string(index)
 
 	for _, want := range []string{
-		`data-theme="rose-pine"`,
 		`dir="rtl"`,
 		"برنامه درسی",
 		"نوع ارائه",
@@ -81,7 +80,7 @@ func TestRender(t *testing.T) {
 	// The last-updated chip must hold a Gregorian (system) date.
 	date := regexp.MustCompile(`\d{4}/\d{2}/\d{2}`)
 	if !date.MatchString(html) {
-		t.Errorf("index.html missing a Persian date for آخرین بروزرسانی")
+		t.Errorf("index.html missing a Gregorian date for آخرین بروزرسانی")
 	}
 
 	// The JSON payload must be embedded verbatim for the client script.

@@ -4,7 +4,7 @@ Turn raw HTML course-schedule tables into a static, searchable web page.
 
 The CLI parses the HTML export (e.g. an HTML Tidy dump of a course catalog),
 binds it to a column configuration, normalizes the Persian text, and emits a
-static site: `index.html`, `style.css`, and `app.js`.
+static site: `index.html`, `style.css`, `app.js`, `rose.svg`, and `fuse.min.js`.
 
 The generated page features a clean, right-to-left (RTL) UI themed with
 [Rose Pine](https://rosepinetheme.com/) (dark), a fuzzy search bar with match
@@ -24,7 +24,7 @@ All flags are optional except `-input`:
 | `-input`  | *(required)* | Path to the HTML course-schedule export      |
 | `-out`    | `site`      | Directory to write the generated site into   |
 | `-config` | `config.json`| Path to the column config JSON               |
-| `-title`  | `برنامه درسی` | Page title shown in the site header          |
+| `-title`  | `دروس تخصصی علوم کامپیوتر` | Page title shown in the site header  |
 
 ## Output
 
