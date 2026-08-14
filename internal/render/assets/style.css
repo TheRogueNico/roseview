@@ -1,5 +1,4 @@
-:root,
-:root[data-theme="rose-pine"] {
+:root {
   color-scheme: dark;
   --base: #191724;
   --surface: #1f1d2e;
@@ -16,25 +15,6 @@
   --hl-low: #21202e;
   --hl-med: #403d52;
   --hl-high: #524f67;
-}
-
-:root[data-theme="rose-pine-dawn"] {
-  color-scheme: light;
-  --base: #faf4ed;
-  --surface: #fffaf3;
-  --overlay: #f2e9e1;
-  --muted: #9893a5;
-  --subtle: #797593;
-  --text: #575279;
-  --love: #b4637a;
-  --gold: #ea9d34;
-  --rose: #d7827e;
-  --pine: #286983;
-  --foam: #56949f;
-  --iris: #907aa9;
-  --hl-low: #f4ede8;
-  --hl-med: #dfdad9;
-  --hl-high: #cecacd;
 }
 
 * {
@@ -70,35 +50,6 @@ h1 {
   margin: 0;
   font-size: 1.5rem;
   color: var(--text);
-}
-
-.theme-toggle {
-  appearance: none;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--surface);
-  color: var(--text);
-  border: 1px solid var(--hl-med);
-  border-radius: 8px;
-  padding: 0.4rem 0.6rem;
-  font-size: 0.9rem;
-  font-family: inherit;
-  line-height: 1;
-}
-
-.theme-toggle svg {
-  display: block;
-}
-
-.theme-toggle:hover {
-  border-color: var(--hl-high);
-}
-
-.theme-toggle:focus-visible {
-  outline: 2px solid var(--iris);
-  outline-offset: 2px;
 }
 
 /* Metadata chips */

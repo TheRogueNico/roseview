@@ -7,10 +7,9 @@ binds it to a column configuration, normalizes the Persian text, and emits a
 static site: `index.html`, `style.css`, and `app.js`.
 
 The generated page features a clean, right-to-left (RTL) UI themed with
-[Rose Pine](https://rosepinetheme.com/) (dark) and Rose Pine Dawn (light,
-switchable), a fuzzy search bar with match highlighting that matches across
-columns, sortable columns, and a low-transparency "empty" icon for blank
-cells.
+[Rose Pine](https://rosepinetheme.com/) (dark), a fuzzy search bar with match
+highlighting that matches across columns, sortable columns, and a
+low-transparency "empty" icon for blank cells.
 
 ## Usage
 
@@ -32,8 +31,8 @@ All flags are optional except `-input`:
 The `-out` directory receives:
 
 - `index.html` — page skeleton with the extracted data embedded as JSON
-- `style.css`  — Rose Pine / Rose Pine Dawn themes and layout
-- `app.js`     — rendering, fuzzy search, sorting, and theme toggle
+- `style.css`  — Rose Pine theme and layout
+- `app.js`     — rendering, fuzzy search, and sorting
 - `fuse.min.js` — the Fuse.js fuzzy-search library, bundled with the site
 
 Open `index.html` in a browser; no server or network is needed.

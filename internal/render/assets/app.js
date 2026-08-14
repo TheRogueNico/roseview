@@ -220,36 +220,5 @@ thead.addEventListener("click", (e) => {
 
 search.addEventListener("input", renderRows);
 
-// Theme toggle: Rose Pine (dark) by default, Rose Pine Dawn (light) on
-// request. The choice is persisted across visits. The button shows the Sun
-// while in dark mode and the Moon while in light mode.
-const root = document.documentElement;
-const toggle = document.getElementById("theme-toggle");
-const THEME_KEY = "roseview-theme";
-const THEMES = ["rose-pine", "rose-pine-dawn"];
-
-const sunIcon =
-  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="22"></line><line x1="2" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="22" y2="12"></line><line x1="4.9" y1="4.9" x2="7" y2="7"></line><line x1="17" y1="17" x2="19.1" y2="19.1"></line><line x1="4.9" y1="19.1" x2="7" y2="17"></line><line x1="17" y1="7" x2="19.1" y2="4.9"></line></svg>';
-
-const moonIcon =
-  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>';
-
-function applyTheme(theme) {
-  root.dataset.theme = theme;
-  localStorage.setItem(THEME_KEY, theme);
-  toggle.innerHTML = theme === "rose-pine" ? sunIcon : moonIcon;
-  toggle.setAttribute(
-    "aria-label",
-    theme === "rose-pine" ? "Switch to light theme" : "Switch to dark theme"
-  );
-}
-
-const stored = localStorage.getItem(THEME_KEY);
-applyTheme(THEMES.includes(stored) ? stored : "rose-pine");
-
-toggle.addEventListener("click", () => {
-  applyTheme(root.dataset.theme === "rose-pine" ? "rose-pine-dawn" : "rose-pine");
-});
-
 renderHead();
 renderRows();
