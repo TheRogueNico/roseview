@@ -100,7 +100,6 @@ h1 {
   inset-inline-start: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--muted);
   pointer-events: none;
 }
 
@@ -165,8 +164,12 @@ thead th:hover {
 }
 
 thead th .sort-arrow {
-  color: var(--foam);
   margin-inline-start: 0.3rem;
+}
+
+thead th .sort-arrow-icon {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 tbody td {
@@ -207,7 +210,6 @@ mark {
 td .empty-icon {
   display: inline-flex;
   vertical-align: middle;
-  color: var(--text);
   opacity: 0.2;
 }
 

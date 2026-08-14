@@ -14,7 +14,7 @@ low-transparency "empty" icon for blank cells.
 ## Usage
 
 ```sh
-roseview -input example.html
+roseview -input /path/to/schedule.html
 ```
 
 All flags are optional except `-input`:
@@ -33,13 +33,14 @@ The `-out` directory receives:
 - `index.html` — page skeleton with the extracted data embedded as JSON
 - `style.css`  — Rose Pine theme and layout
 - `app.js`     — rendering, fuzzy search, and sorting
+- `rose.svg`   — favicon
 - `fuse.min.js` — the Fuse.js fuzzy-search library, bundled with the site
 
 Open `index.html` in a browser; no server or network is needed.
 
 The first build fetches Fuse.js via npm and caches it in
-`assets/fuse.min.js`; later builds reuse the cache, and the generated page
-itself is fully offline.
+`internal/render/assets/fuse.min.js`; later builds reuse the cache, and the
+generated page itself is fully offline.
 
 ## Configuration
 
@@ -68,3 +69,8 @@ supporting packages under `internal/`:
 - `internal/render` — emits the static site (embeds `assets/`)
 - `internal/fuse` — fetches/caches the Fuse.js library
 - `internal/normalize` — Persian text normalization
+
+## License
+
+BSD Zero Clause — see `LICENSE`. UI icons are from
+[Lucide](https://lucide.dev/) (ISC license).

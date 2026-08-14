@@ -4,10 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ .Title }}</title>
+<link rel="icon" type="image/svg+xml" href="rose.svg">
 <link rel="stylesheet" href="style.css">
 <script>window.ROSEVIEW = {{ .Data }};</script>
 </head>
 <body>
+  <svg aria-hidden="true" style="display:none">
+    <symbol id="icon-rose" viewBox="0 0 24 24" fill="none" stroke="#ebbcba" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 10h-1a4 4 0 1 1 4-4v.534"/><path d="M17 6h1a4 4 0 0 1 1.42 7.74l-2.29.87a6 6 0 0 1-5.339-10.68l2.069-1.31"/><path d="M4.5 17c2.8-.5 4.4 0 5.5.8s1.8 2.2 2.3 3.7c-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2"/><path d="M9.77 12C4 15 2 22 2 22"/><circle cx="17" cy="8" r="2"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="#6e6a86" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></symbol>
+    <symbol id="icon-sort-asc" viewBox="0 0 24 24" fill="none" stroke="#9ccfd8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></symbol>
+    <symbol id="icon-sort-desc" viewBox="0 0 24 24" fill="none" stroke="#9ccfd8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="icon-minus" viewBox="0 0 24 24" fill="none" stroke="#e0def4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></symbol>
+  </svg>
   <div class="container">
     <header class="topbar">
       {{ if .Title }}<h1>{{ .Title }}</h1>{{ end }}
@@ -21,7 +29,7 @@
 
     <div class="toolbar">
       <div class="search-wrap">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="5"></circle><line x1="11" y1="11" x2="14.5" y2="14.5"></line></svg>
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-search"></use></svg>
         <input id="search" class="search" type="search" placeholder="جستجو در دروس..." autocomplete="off" autofocus>
       </div>
       <span id="count" class="count" aria-live="polite"></span>

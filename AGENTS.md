@@ -6,7 +6,7 @@ Go CLI with supporting packages. The `main.go` command lives at the repo root; a
 
 - `go test ./...` — all tests run offline; they stub the Fuse.js cache via `ROSEVIEW_FUSE_CACHE` (see `internal/render/render_test.go`). Never make tests depend on the network.
 - `go build .` — produces the `roseview` binary (gitignored).
-- Local smoke test: `go run . -input example.html` (writes to `site/`, gitignored).
+- Local smoke test: `go run . -input /path/to/export.html` (writes to `site/`, gitignored; the old `example.html` sample is gone).
 
 ## Pipeline
 
@@ -20,4 +20,5 @@ Package dependencies (acyclic): `main` → config, parse, build, render; `render
 - `normalize.Normalize` (`internal/normalize`) is applied to both config headers and cell text before matching: Arabic forms map to Persian (`ك`→`ک`, `ي`→`ی`), harakat/ZWNJ are stripped, whitespace collapsed. So `config.json` headers match source HTML regardless of variant spelling — keep that behavior when editing.
 - `parse.ParseTables` only reads `<thead>/<th>` headers and `<tbody>/<td>` rows of top-level tables; nested tables are skipped, cells are raw text (normalization happens in `build.Build`).
 - Output text is Persian (RTL); `render.Render` prepends a `آخرین بروزرسانی` metadata entry with the system date in Gregorian `YYYY/MM/DD` form.
+- UI icons are Lucide SVGs in `internal/render/assets/` (`rose.svg`, `search.svg`, `chevron-up.svg`, `chevron-down.svg`, `minus.svg`) with hardcoded Rose Pine colors. They are inlined into `index.tmpl` as a sprite and referenced via same-document `<use href="#icon-…">` — do not move them to an external sprite file, which would fail over `file://` (CORS). Only `rose.svg` is copied to the output as the favicon; the rest are compile-time sources for the sprite.
 - `config.json` is the column config for the real input; the shipped config contains Arabic-kaf headers (e.g. `كد درس`) that only match after `normalize.Normalize`.

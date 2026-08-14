@@ -71,19 +71,24 @@ function searchRows(query) {
 }
 
 function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, (c) => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;",
-  }[c]));
+  return s.replace(
+    /[&<>"']/g,
+    (c) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[c],
+  );
 }
 
 // Convert Persian/Arabic digits to ASCII so numeric columns compare as
 // numbers. Returns NaN when the string is not numeric.
 function toNumber(s) {
-  const digits = "\u06f0\u06f1\u06f2\u06f3\u06f4\u06f5\u06f6\u06f7\u06f8\u06f9\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669";
+  const digits =
+    "\u06f0\u06f1\u06f2\u06f3\u06f4\u06f5\u06f6\u06f7\u06f8\u06f9\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669";
   const t = s.replace(/[\u06f0-\u06f9\u0660-\u0669]/g, (d) => digits.indexOf(d) % 10);
   const n = Number(t);
   return Number.isNaN(n) ? NaN : n;
@@ -114,7 +119,7 @@ function renderCell(text, matched) {
 }
 
 function emptyIcon() {
-  return '<svg class="empty-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><line x1="3.5" y1="8" x2="12.5" y2="8"></line></svg>';
+  return '<svg class="empty-icon" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-minus"></use></svg>';
 }
 
 function compareCells(a, b) {
@@ -143,9 +148,16 @@ function sortedIndexes() {
 function renderHead() {
   let html = "<tr>";
   for (let i = 0; i < columns.length; i++) {
-    const arrow = sortState[i] === 1 ? "\u25b2" : sortState[i] === 2 ? "\u25bc" : "";
+    const arrow =
+      sortState[i] === 1
+        ? '<svg class="sort-arrow-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-sort-asc"></use></svg>'
+        : sortState[i] === 2
+          ? '<svg class="sort-arrow-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-sort-desc"></use></svg>'
+          : "";
     html +=
-      '<th data-col="' + i + '"><span>' +
+      '<th data-col="' +
+      i +
+      '"><span>' +
       escapeHtml(columns[i].header) +
       '</span><span class="sort-arrow">' +
       arrow +
@@ -172,7 +184,10 @@ function renderRows() {
     matchSet = new Set(results.keys());
     matchMap = new Map();
     for (const [ref, perCol] of results) {
-      matchMap.set(ref, perCol.map((s) => [...s].sort((a, b) => a - b)));
+      matchMap.set(
+        ref,
+        perCol.map((s) => [...s].sort((a, b) => a - b)),
+      );
     }
   }
 
@@ -222,3 +237,4 @@ search.addEventListener("input", renderRows);
 
 renderHead();
 renderRows();
+
