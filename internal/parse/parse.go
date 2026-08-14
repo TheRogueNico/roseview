@@ -71,7 +71,7 @@ func parseRows(parent *html.Node, cellTag string) [][]string {
 		var row []string
 		for cell := c.FirstChild; cell != nil; cell = cell.NextSibling {
 			if cell.Type == html.ElementNode && cell.Data == cellTag {
-				row = append(row, textContent(cell))
+				row = append(row, cellText(cell))
 			}
 		}
 		if len(row) > 0 {
@@ -79,6 +79,37 @@ func parseRows(parent *html.Node, cellTag string) [][]string {
 		}
 	}
 	return rows
+}
+
+// cellText returns the text of a single cell. Some source exports truncate
+// the visible text with "..." and keep the full text in a descendant's title
+// attribute; when that pattern is detected the title text is used instead.
+func cellText(cell *html.Node) string {
+	text := textContent(cell)
+	if strings.HasSuffix(strings.TrimSpace(text), "...") {
+		if t := cellTitle(cell); t != "" {
+			return t
+		}
+	}
+	return text
+}
+
+// cellTitle returns the first non-empty title attribute found among the
+// element's descendants, or "" if none exists.
+func cellTitle(n *html.Node) string {
+	for c := n.FirstChild; c != nil; c = c.NextSibling {
+		if c.Type == html.ElementNode {
+			for _, attr := range c.Attr {
+				if attr.Key == "title" && strings.TrimSpace(attr.Val) != "" {
+					return attr.Val
+				}
+			}
+			if t := cellTitle(c); t != "" {
+				return t
+			}
+		}
+	}
+	return ""
 }
 
 // textContent returns the concatenated text of all descendant text nodes.

@@ -44,12 +44,64 @@ body {
   gap: 1rem;
   flex-wrap: wrap;
   padding-bottom: 0.5rem;
+  direction: ltr;
+}
+
+.branding {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.brand-rose {
+  color: var(--love);
+  flex-shrink: 0;
+}
+
+.brand-title {
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.brand-subtitle {
+  font-size: 0.9rem;
+  font-style: normal;
+  color: var(--muted);
+  line-height: 1.3;
 }
 
 h1 {
   margin: 0;
   font-size: 1.5rem;
   color: var(--text);
+}
+
+.github-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--hl-med);
+  border-radius: 10px;
+  padding: 0.45rem;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.github-btn:hover {
+  color: var(--love);
+  border-color: var(--love);
+}
+
+.github-icon {
+  transition: transform 0.15s ease;
+}
+
+.github-btn:hover .github-icon {
+  transform: scale(1.15);
 }
 
 /* Metadata chips */
