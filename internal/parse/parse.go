@@ -53,9 +53,7 @@ func parseTable(table *html.Node) Table {
 				t.Headers = rows[0]
 			}
 		case "tbody":
-			for _, row := range parseRows(c, "td") {
-				t.Rows = append(t.Rows, row)
-			}
+			t.Rows = append(t.Rows, parseRows(c, "td")...)
 		}
 	}
 	return t
