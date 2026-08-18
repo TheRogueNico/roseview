@@ -10,23 +10,17 @@ const tbody = document.getElementById("table-body");
 const search = document.getElementById("search");
 const count = document.getElementById("count");
 
-// Minimum query length before fuzzy matching kicks in. Shorter queries are
-// ignored entirely so a stray single character does not flood the results.
-const MIN_QUERY_LENGTH = 2;
-
 // Per-column sort state: 0 = unsorted, 1 = ascending, 2 = descending.
 const sortState = columns.map(() => 0);
 
 // Fuse.js index over the rows, searched one word at a time (no
 // built-in tokenized search). includeMatches yields the per-key character
 // ranges used to decide which cells matched; threshold 0.3 keeps matching
-// forgiving, and minMatchCharLength drops matches built on a single stray
-// character.
+// forgiving.
 const fuse = new Fuse(rows, {
   keys: columns.map((c) => c.field),
   threshold: 0.3,
   ignoreLocation: true,
-  minMatchCharLength: 2,
   includeMatches: true,
 });
 
@@ -153,9 +147,9 @@ function renderRows() {
   const query = search.value.trim();
   const sorted = sortState.some((st) => st !== 0);
 
-  // Queries shorter than the minimum are ignored entirely so a stray single
-  // character does not flood the results with weak matches.
-  const searching = query.length >= MIN_QUERY_LENGTH;
+  // An empty query shows all rows; anything else is handed to Fuse, which
+  // decides match quality on its own.
+  const searching = query.length > 0;
 
   // Run the query once against the Fuse index; rows are still iterated in
   // sorted order, filtered by the matched set.

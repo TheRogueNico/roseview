@@ -8,8 +8,9 @@ static site: `index.html`, `rose-pine.css`, `style.css`, `app.js`, `rose.svg`,
 and `fuse.min.js`.
 
 The generated page features a clean, right-to-left (RTL) UI themed with
-[Rose Pine](https://rosepinetheme.com/) (dark), a fuzzy search bar with match
-highlighting that matches across columns, sortable columns, and a
+[Rose Pine](https://rosepinetheme.com/) (dark), a fuzzy search bar that
+matches across columns with per-cell highlighting (every non-empty query is
+searched; Fuse decides match quality on its own), sortable columns, and a
 low-transparency "empty" icon for blank cells. All colors are defined once in
 `rose-pine.css` (the official `--rp-*` palette variables) and referenced
 everywhere else, so the theme can be swapped without touching any other file.
