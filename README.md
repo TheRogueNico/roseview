@@ -19,21 +19,21 @@ roseview -input /path/to/schedule.html
 
 All flags are optional except `-input`:
 
-| Flag      | Default      | Description                                  |
-|-----------|--------------|----------------------------------------------|
-| `-input`  | *(required)* | Path to the HTML course-schedule export      |
-| `-out`    | `site`      | Directory to write the generated site into   |
-| `-config` | `config.json`| Path to the column config JSON               |
-| `-title`  | `دروس تخصصی علوم کامپیوتر` | Page title shown in the site header  |
+| Flag      | Default                    | Description                                |
+| --------- | -------------------------- | ------------------------------------------ |
+| `-input`  | _(required)_               | Path to the HTML course-schedule export    |
+| `-out`    | `site`                     | Directory to write the generated site into |
+| `-config` | `config.json`              | Path to the column config JSON             |
+| `-title`  | `دروس تخصصی علوم کامپیوتر` | Page title shown in the site header        |
 
 ## Output
 
 The `-out` directory receives:
 
 - `index.html` — page skeleton with the extracted data embedded as JSON
-- `style.css`  — Rose Pine theme and layout
-- `app.js`     — rendering, fuzzy search, and sorting
-- `rose.svg`   — favicon
+- `style.css` — Rose Pine theme and layout
+- `app.js` — rendering, fuzzy search, and sorting
+- `rose.svg` — favicon
 - `fuse.min.js` — the Fuse.js fuzzy-search library, bundled with the site
 
 Open `index.html` in a browser; no server or network is needed. Fuse.js
@@ -72,3 +72,4 @@ supporting packages under `internal/`:
 
 BSD Zero Clause — see `LICENSE`. UI icons are from
 [Lucide](https://lucide.dev/) (ISC license).
+
