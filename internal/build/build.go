@@ -46,11 +46,16 @@ func Build(cfg config.Config, tables []parse.Table, title string) (Output, error
 
 	// Resolve each configured column to a source index. The first table
 	// provides the reference headers; the rest are expected to match it.
+	// Skip columns are dropped anyway, so a missing header for one does not
+	// fail the build.
 	mappings := make([]mapping, 0, len(cfg.Columns))
 	srcIndex := make(map[string]int, len(cfg.Columns))
 	for _, col := range cfg.Columns {
 		idx := findHeader(tables[0].Headers, col.Header)
 		if idx < 0 {
+			if col.Group == config.GroupSkip {
+				continue
+			}
 			return out, fmt.Errorf("column %q not found in table headers", col.Header)
 		}
 		mappings = append(mappings, mapping{column: col, src: idx})
@@ -87,8 +92,14 @@ func Build(cfg config.Config, tables []parse.Table, title string) (Output, error
 	})
 
 	// Extract rows across every table, normalizing each cell. Skip columns
-	// are excluded entirely.
-	for _, tbl := range tables {
+	// are excluded entirely. Later tables must share the reference header
+	// layout, otherwise their rows would silently map to wrong columns.
+	for ti, tbl := range tables {
+		if ti > 0 {
+			if err := checkHeaders(tbl.Headers, tables[0].Headers); err != nil {
+				return out, fmt.Errorf("table %d: %w", ti+1, err)
+			}
+		}
 		for _, cells := range tbl.Rows {
 			row := make(map[string]string, len(mappings))
 			for _, m := range mappings {
@@ -123,6 +134,21 @@ func findHeader(headers []string, want string) int {
 		}
 	}
 	return -1
+}
+
+// checkHeaders verifies that headers line up with the reference header row
+// (positionally, after normalization). Rows are mapped by column index, so
+// a diverging header layout would silently misalign every row.
+func checkHeaders(headers, ref []string) error {
+	if len(headers) != len(ref) {
+		return fmt.Errorf("header count %d does not match reference %d", len(headers), len(ref))
+	}
+	for i := range ref {
+		if normalize.Normalize(headers[i]) != normalize.Normalize(ref[i]) {
+			return fmt.Errorf("header %q does not match reference %q", headers[i], ref[i])
+		}
+	}
+	return nil
 }
 
 // cellAt returns the normalized text of the cell at index i, or "" when the

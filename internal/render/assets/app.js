@@ -7,11 +7,19 @@ const rows = data.Rows;
 
 const thead = document.getElementById("table-head");
 const tbody = document.getElementById("table-body");
+const pinnedWrap = document.getElementById("pinned-wrap");
+const pinnedHead = document.getElementById("pinned-head");
+const pinnedBody = document.getElementById("pinned-body");
 const search = document.getElementById("search");
 const count = document.getElementById("count");
 
-// Per-column sort state: 0 = unsorted, 1 = ascending, 2 = descending.
+// Per-column sort state: 0 = unsorted, 1 = ascending, 2 = descending. The
+// main and pinned tables sort independently.
 const sortState = columns.map(() => 0);
+const pinnedSortState = columns.map(() => 0);
+
+// Pinned rows, keyed by refIndex in insertion order. In-memory only.
+const pinned = new Set();
 
 // Fuse.js index over the rows, searched one word at a time (no
 // built-in tokenized search). includeMatches yields the per-key character
@@ -111,24 +119,45 @@ function compareCells(a, b) {
   return a.localeCompare(b, "fa");
 }
 
-// sortedIndexes returns row indexes ordered by the active sort column.
-function sortedIndexes() {
-  const idx = rows.map((_, i) => i);
-  const col = sortState.findIndex((st) => st !== 0);
-  const dir = sortState[col] === 1 ? 1 : -1;
+// sortIndexes returns indexes ordered by the active column of state.
+function sortIndexes(indexes, state) {
+  const col = state.findIndex((st) => st !== 0);
+  if (col < 0) return [...indexes];
+  const dir = state[col] === 1 ? 1 : -1;
   const field = columns[col].field;
-  idx.sort((a, b) => compareCells(rows[a][field], rows[b][field]) * dir);
-  return idx;
+  return [...indexes].sort((a, b) => compareCells(rows[a][field], rows[b][field]) * dir);
 }
 
-function renderHead() {
-  let html = "<tr>";
+// pinButton emits the bookmark button for row ref. Pinned rows show the
+// minus icon so either table can unpin; everything else offers to pin.
+function pinButton(ref) {
+  const pinnedRow = pinned.has(ref);
+  const icon = pinnedRow ? "minus" : "plus";
+  const label = pinnedRow ? "حذف پین" : "پین کردن";
+  return (
+    '<button class="pin-btn' +
+    (pinnedRow ? " pinned" : "") +
+    '" data-pin="' +
+    ref +
+    '" aria-label="' +
+    label +
+    '"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-bookmark-' +
+    icon +
+    '"></use></svg></button>'
+  );
+}
+
+// renderHead emits the column headers into theadEl. The pin column comes
+// first; it has no data-col attribute and therefore cannot be sorted.
+function renderHead(theadEl, state) {
+  let html =
+    '<tr><th class="pin-col"><svg class="pin-head-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-bookmark"></use></svg></th>';
   for (let i = 0; i < columns.length; i++) {
     const arrow =
-      sortState[i] === 1
-        ? '<svg class="sort-arrow-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-sort-asc"></use></svg>'
-        : sortState[i] === 2
-          ? '<svg class="sort-arrow-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-sort-desc"></use></svg>'
+      state[i] === 1
+        ? '<svg class="sort-arrow-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-chevron-up"></use></svg>'
+        : state[i] === 2
+          ? '<svg class="sort-arrow-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-chevron-down"></use></svg>'
           : "";
     html +=
       '<th data-col="' +
@@ -140,10 +169,48 @@ function renderHead() {
       "</span></th>";
   }
   html += "</tr>";
-  thead.innerHTML = html;
+  theadEl.innerHTML = html;
 }
 
-function renderRows() {
+// renderTable emits the given rows into tbodyEl, pin column first. A
+// non-null matchMap filters rows to the matched set and highlights matched
+// cells; null renders every row with no highlighting (the pinned table).
+// The pinned table is hidden while empty, so the empty-row message only
+// ever shows in the search results.
+function renderTable(tbodyEl, indexes, matchMap) {
+  const searching = matchMap !== null;
+  let html = "";
+  let shown = 0;
+  for (const i of indexes) {
+    const row = rows[i];
+    let perCol = null;
+    if (searching) {
+      if (!matchMap.has(i)) continue;
+      perCol = matchMap.get(i);
+    }
+
+    shown++;
+    html += "<tr>";
+    html += '<td class="pin-col">' + pinButton(i) + "</td>";
+    for (let c = 0; c < columns.length; c++) {
+      const value = row[columns[c].field] || "";
+      html += "<td>" + renderCell(value, perCol ? perCol[c] : null) + "</td>";
+    }
+    html += "</tr>";
+  }
+
+  if (html === "") {
+    html =
+      '<tr class="empty-row"><td colspan="' +
+      (columns.length + 1) +
+      '">نتیجهای یافت نشد</td></tr>';
+  }
+  tbodyEl.innerHTML = html;
+  return shown;
+}
+
+// renderMain renders the searchable results table.
+function renderMain() {
   const query = search.value.trim();
   const sorted = sortState.some((st) => st !== 0);
 
@@ -153,61 +220,90 @@ function renderRows() {
 
   // Run the query once against the Fuse index; rows are still iterated in
   // sorted order, filtered by the matched set.
-  let matchSet = null;
   let matchMap = null;
   if (searching) {
     const results = searchRows(query);
-    matchSet = new Set(results.keys());
     matchMap = new Map();
     for (const [ref, perCol] of results) {
       matchMap.set(ref, perCol);
     }
   }
 
-  let html = "";
-  let shown = 0;
-  const indexes = sorted ? sortedIndexes() : rows.map((_, i) => i);
-
-  for (const i of indexes) {
-    const row = rows[i];
-    let matches = null;
-    if (searching) {
-      if (!matchSet.has(i)) continue;
-      matches = matchMap.get(i);
-    }
-
-    shown++;
-    html += "<tr>";
-    for (let c = 0; c < columns.length; c++) {
-      const value = row[columns[c].field] || "";
-      html += "<td>" + renderCell(value, matches ? matches[c] : null) + "</td>";
-    }
-    html += "</tr>";
-  }
-
-  if (html === "") {
-    html = '<tr class="empty-row"><td colspan="' + columns.length + '">نتیجهای یافت نشد</td></tr>';
-  }
-  tbody.innerHTML = html;
+  const indexes = sorted
+    ? sortIndexes(rows.map((_, i) => i), sortState)
+    : rows.map((_, i) => i);
+  const shown = renderTable(tbody, indexes, matchMap);
   count.textContent = shown + " نتیجه";
+}
+
+// renderPinned renders the pinned table: search-independent, sorted by the
+// pinned sort state, hidden while nothing is pinned.
+function renderPinned() {
+  const sorted = pinnedSortState.some((st) => st !== 0);
+  const indexes = sorted ? sortIndexes([...pinned], pinnedSortState) : [...pinned];
+  renderTable(pinnedBody, indexes, null);
+  pinnedWrap.hidden = pinned.size === 0;
+}
+
+// cycleSort advances the sort state of a single column, clearing the rest.
+function cycleSort(state, i) {
+  state[i] = (state[i] + 1) % 3;
+  for (let j = 0; j < state.length; j++) {
+    if (j !== i) state[j] = 0;
+  }
+}
+
+// togglePin adds or removes a row from the pinned set and refreshes both
+// tables.
+function togglePin(ref) {
+  if (pinned.has(ref)) {
+    pinned.delete(ref);
+  } else {
+    pinned.add(ref);
+  }
+  renderMain();
+  renderPinned();
 }
 
 thead.addEventListener("click", (e) => {
   const th = e.target.closest("th");
-  if (!th) return;
+  if (!th || th.dataset.col === undefined) return;
 
-  const i = Number(th.dataset.col);
-  sortState[i] = (sortState[i] + 1) % 3;
-  for (let j = 0; j < sortState.length; j++) {
-    if (j !== i) sortState[j] = 0;
-  }
-
-  renderHead();
-  renderRows();
+  cycleSort(sortState, Number(th.dataset.col));
+  renderHead(thead, sortState);
+  renderMain();
 });
 
-search.addEventListener("input", renderRows);
+pinnedHead.addEventListener("click", (e) => {
+  const th = e.target.closest("th");
+  if (!th || th.dataset.col === undefined) return;
 
-renderHead();
-renderRows();
+  cycleSort(pinnedSortState, Number(th.dataset.col));
+  renderHead(pinnedHead, pinnedSortState);
+  renderPinned();
+});
 
+tbody.addEventListener("click", (e) => {
+  const btn = e.target.closest(".pin-btn");
+  if (!btn) return;
+  togglePin(Number(btn.dataset.pin));
+});
+
+pinnedBody.addEventListener("click", (e) => {
+  const btn = e.target.closest(".pin-btn");
+  if (!btn) return;
+  togglePin(Number(btn.dataset.pin));
+});
+
+// Typing is debounced so a burst of keystrokes does not rebuild the whole
+// table once per character; only the settled query is rendered.
+let searchTimer = null;
+search.addEventListener("input", () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(renderMain, 120);
+});
+
+renderHead(thead, sortState);
+renderHead(pinnedHead, pinnedSortState);
+renderMain();
+renderPinned();

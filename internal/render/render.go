@@ -27,6 +27,12 @@ func Render(outDir string, out build.Output) error {
 		return fmt.Errorf("creating output dir: %w", err)
 	}
 
+	// Drop previously generated files so the output directory never keeps
+	// stale assets from older builds (e.g. an icon that was removed).
+	for _, name := range []string{"index.html", "rose-pine.css", "style.css", "app.js", "rose.svg", "fuse.min.js"} {
+		_ = os.Remove(filepath.Join(outDir, name))
+	}
+
 	// The generated page records when it was created. Prepend it to the
 	// metadata so it appears first above the table.
 	out.Metadata = append([]build.KV{{

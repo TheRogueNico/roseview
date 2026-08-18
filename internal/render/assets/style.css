@@ -229,6 +229,41 @@ td .empty-icon {
   opacity: 0.2;
 }
 
+/* Pinned table */
+
+.pinned-wrap {
+  margin-bottom: 1rem;
+}
+
+.pin-col {
+  width: 2.2rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pin-head-icon {
+  display: inline-block;
+  vertical-align: middle;
+  color: var(--rp-gold);
+}
+
+.pin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0.15rem;
+  cursor: pointer;
+  color: var(--rp-muted);
+  transition: color 0.15s ease;
+}
+
+.pin-btn:hover,
+.pin-btn.pinned {
+  color: var(--rp-gold);
+}
+
 /* Footer */
 
 .footer {
