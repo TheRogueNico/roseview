@@ -29,7 +29,7 @@ func TestRender(t *testing.T) {
 		t.Fatalf("Render() error = %v", err)
 	}
 
-	for _, name := range []string{"index.html", "style.css", "app.js", "fuse.min.js", "rose.svg"} {
+	for _, name := range []string{"index.html", "rose-pine.css", "style.css", "app.js", "fuse.min.js", "rose.svg"} {
 		if _, err := os.Stat(filepath.Join(dir, name)); err != nil {
 			t.Errorf("missing asset %s: %v", name, err)
 		}
@@ -47,6 +47,7 @@ func TestRender(t *testing.T) {
 		"نوع ارائه",
 		"حضوري",
 		"window.ROSEVIEW",
+		"rose-pine.css",
 		"style.css",
 		"fuse.min.js",
 		"app.js",

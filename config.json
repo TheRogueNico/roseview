@@ -17,8 +17,8 @@
     { "field": "delivery_type", "header": "نوع ارائه", "group": "skip" },
     { "field": "offer_level", "header": "سطح ارائه", "group": "skip" },
     { "field": "eligible_students", "header": "دانشجويان مجاز به اخذ کلاس", "group": "skip" },
-    { "field": "faculty_group", "header": "گروه آموزشی", "group": "metadata" },
     { "field": "college", "header": "دانشکده", "group": "metadata" },
+    { "field": "faculty_group", "header": "گروه آموزشی", "group": "metadata" },
     { "field": "unit", "header": "واحد", "group": "skip" },
     { "field": "province", "header": "استان", "group": "skip" }
   ]

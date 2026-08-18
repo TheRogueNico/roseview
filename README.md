@@ -4,12 +4,15 @@ Turn raw HTML course-schedule tables into a static, searchable web page.
 
 The CLI parses the HTML export (e.g. an HTML Tidy dump of a course catalog),
 binds it to a column configuration, normalizes the Persian text, and emits a
-static site: `index.html`, `style.css`, `app.js`, `rose.svg`, and `fuse.min.js`.
+static site: `index.html`, `rose-pine.css`, `style.css`, `app.js`, `rose.svg`,
+and `fuse.min.js`.
 
 The generated page features a clean, right-to-left (RTL) UI themed with
 [Rose Pine](https://rosepinetheme.com/) (dark), a fuzzy search bar with match
 highlighting that matches across columns, sortable columns, and a
-low-transparency "empty" icon for blank cells.
+low-transparency "empty" icon for blank cells. All colors are defined once in
+`rose-pine.css` (the official `--rp-*` palette variables) and referenced
+everywhere else, so the theme can be swapped without touching any other file.
 
 ## Usage
 
@@ -31,7 +34,9 @@ All flags are optional except `-input`:
 The `-out` directory receives:
 
 - `index.html` — page skeleton with the extracted data embedded as JSON
-- `style.css` — Rose Pine theme and layout
+- `rose-pine.css` — Rose Pine (dark) palette; the single color source for the
+  whole site, defining the official `--rp-*` theme variables
+- `style.css` — layout and styling, referencing only theme variables
 - `app.js` — rendering, fuzzy search, and sorting
 - `rose.svg` — favicon
 - `fuse.min.js` — the Fuse.js fuzzy-search library, bundled with the site
