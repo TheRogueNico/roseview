@@ -4,7 +4,7 @@
     { "field": "row_icon", "group": "skip" },
     { "field": "course_code", "header": "كد درس", "group": "data", "order": 1 },
     { "field": "course_name", "header": "نام درس", "group": "data", "order": 2 },
-    { "field": "course_type", "header": "نوع درس", "group": "data" },
+    { "field": "course_type", "header": "نوع درس", "group": "skip" },
     { "field": "theory_units", "header": "تعداد واحد نظري", "group": "data" },
     { "field": "practical_units", "header": "تعداد واحد عملي", "group": "data" },
     { "field": "class_code", "header": "كد ارائه کلاس درس", "group": "data", "order": 4 },
